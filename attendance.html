@@ -396,6 +396,9 @@ function markAttendance(staffId, status) {
 
     saveAttendance(attendance);
 
+    if (typeof markAttendanceRemote === "function") {
+        markAttendanceRemote(staffId, date, status);
+    }
 
     renderAttendance();
 

@@ -707,6 +707,10 @@ function deleteStaff(index) {
 
     saveStaff(staff);
 
+    if (typeof deleteStaffRemote === "function") {
+        deleteStaffRemote(member.staffId);
+    }
+
 
     /* Remove attendance records of deleted staff */
 

@@ -425,6 +425,10 @@ document.getElementById("noticeForm")
 
     saveNotices(notices);
 
+    if (typeof saveNoticeRemote === "function") {
+        saveNoticeRemote(data);
+    }
+
     closeNoticeModal();
 
     renderNotices();
@@ -462,9 +466,15 @@ function deleteNotice(index) {
     }
 
 
+    const noticeId = notice.id;
+
     notices.splice(index, 1);
 
     saveNotices(notices);
+
+    if (typeof deleteNoticeRemote === "function" && noticeId) {
+        deleteNoticeRemote(noticeId);
+    }
 
     renderNotices();
 

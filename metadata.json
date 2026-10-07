@@ -1,0 +1,8 @@
+{
+  "name": "EduStaff | College Staff Portal",
+  "description": "Smart management system for modern college staff to handle notices, attendance, and faculty records.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

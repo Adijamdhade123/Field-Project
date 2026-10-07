@@ -85,79 +85,58 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        // Get latest users
-        users = JSON.parse(
-            localStorage.getItem("staffUsers")
-        ) || [];
+        // Try Supabase auth first
+        fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ staffId, password })
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.success && result.user) {
+                localStorage.setItem("currentStaff", JSON.stringify(result.user));
+                localStorage.setItem("lastLogin", new Date().toISOString());
+                const rememberMe = document.getElementById("rememberMe").checked;
+                localStorage.setItem("rememberMe", rememberMe ? "true" : "false");
+                showMessage("Login successful! Redirecting...", "success");
+                setTimeout(() => { window.location.href = "dashboard.html"; }, 600);
+            } else {
+                fallbackLocalLogin();
+            }
+        })
+        .catch(() => {
+            fallbackLocalLogin();
+        });
 
-
-        const user = users.find(function (account) {
-
-            return (
+        function fallbackLocalLogin() {
+            users = JSON.parse(localStorage.getItem("staffUsers")) || [];
+            const user = users.find(account =>
                 account.staffId.toUpperCase() === staffId &&
                 account.password === password
             );
 
-        });
+            if (!user) {
+                showMessage("Invalid Staff ID or password.", "error");
+                return;
+            }
 
+            const session = {
+                staffId: user.staffId,
+                name: user.name,
+                email: user.email,
+                department: user.department,
+                loginTime: new Date().toISOString()
+            };
 
-        if (!user) {
+            localStorage.setItem("currentStaff", JSON.stringify(session));
+            localStorage.setItem("lastLogin", new Date().toISOString());
+            const rememberMe = document.getElementById("rememberMe").checked;
+            localStorage.setItem("rememberMe", rememberMe ? "true" : "false");
 
-            showMessage(
-                "Invalid Staff ID or password.",
-                "error"
-            );
-
-            return;
+            showMessage("Login successful! Redirecting...", "success");
+            setTimeout(() => { window.location.href = "dashboard.html"; }, 600);
         }
-
-
-        // --------------------------------------------------
-        // SAVE LOGIN SESSION
-        // --------------------------------------------------
-
-        const session = {
-            staffId: user.staffId,
-            name: user.name,
-            email: user.email,
-            department: user.department,
-            loginTime: new Date().toISOString()
-        };
-
-        localStorage.setItem(
-            "currentStaff",
-            JSON.stringify(session)
-        );
-
-
-        // Save last login
-        localStorage.setItem(
-            "lastLogin",
-            new Date().toISOString()
-        );
-
-
-        // Remember me
-        const rememberMe =
-            document.getElementById("rememberMe").checked;
-
-        localStorage.setItem(
-            "rememberMe",
-            rememberMe ? "true" : "false"
-        );
-
-
-        showMessage(
-            "Login successful! Redirecting...",
-            "success"
-        );
-
-
-        setTimeout(function () {
-
-            window.location.href = "dashboard.html";
-
-        }, 700);
+        return;
 
     });
 
@@ -170,8 +149,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         event.preventDefault();
 
-        alert(
-            "For this localStorage project, password reset is handled by creating a new account. A real production website would use a secure email/password-reset system."
+        showMessage(
+            "Password reset: You can register a new staff account or use default admin (STAFF001 / Admin@123).",
+            "error"
         );
 
     });

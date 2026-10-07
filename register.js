@@ -122,6 +122,12 @@ document.addEventListener("DOMContentLoaded", function () {
             JSON.stringify(users)
         );
 
+        // Also push to Supabase API
+        fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ staffId, name, email, department, password })
+        }).catch(err => console.warn("Supabase register sync warning:", err));
 
         showMessage(
             "Account created successfully! Redirecting to login...",
