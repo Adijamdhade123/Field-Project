@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management | EduStaff</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">E</div>
+            <div>
+                <h2>EduStaff</h2>
+                <span>College Portal</span>
+            </div>
+        </div>
+
+        <nav class="nav">
+
+            <a href="dashboard.html" class="nav-link">
+                <span>📊</span>
+                Dashboard
+            </a>
+
+            <a href="staff.html" class="nav-link active">
+                <span>👨‍🏫</span>
+                Staff Management
+            </a>
+
+            <a href="attendance.html" class="nav-link">
+                <span>📅</span>
+                Attendance
+            </a>
+
+            <a href="notices.html" class="nav-link">
+                <span>📢</span>
+                Notices
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                <span>👤</span>
+                My Profile
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button class="logout-btn" onclick="logout()">
+                🚪 Logout
+            </button>
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+            <div>
+                <h1>Staff Management</h1>
+                <p>Manage all college staff members</p>
+            </div>
+
+            <div class="user-box">
+                <div class="avatar" id="topAvatar">A</div>
+
+                <div>
+                    <strong id="topName">Staff</strong>
+                    <small id="topDepartment">Department</small>
+                </div>
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+            <div class="page-header">
+
+                <div>
+                    <h2>Staff Members</h2>
+                    <p>Add and manage staff information.</p>
+                </div>
+
+                <button class="primary-btn" onclick="openStaffModal()">
+                    + Add Staff
+                </button>
+
+            </div>
+
+
+            <div class="toolbar">
+
+                <input
+                    type="text"
+                    id="staffSearch"
+                    placeholder="Search by name, ID, email or department..."
+                    oninput="renderStaff()"
+                >
+
+                <select id="departmentFilter" onchange="renderStaff()">
+
+                    <option value="">All Departments</option>
+
+                    <option>Computer Science</option>
+                    <option>Physics</option>
+                    <option>Chemistry</option>
+                    <option>Mathematics</option>
+                    <option>English</option>
+                    <option>Administration</option>
+                    <option>Commerce</option>
+                    <option>Other</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="table-card">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Staff</th>
+                                <th>Staff ID</th>
+                                <th>Department</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="staffTable">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- STAFF MODAL -->
+
+<div class="modal" id="staffModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div>
+                <h2 id="modalTitle">Add Staff</h2>
+                <p>Enter staff member information.</p>
+            </div>
+
+            <button onclick="closeStaffModal()">×</button>
+
+        </div>
+
+
+        <form id="staffForm">
+
+            <input type="hidden" id="editIndex">
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Full Name *</label>
+
+                    <input
+                        type="text"
+                        id="staffName"
+                        required
+                        placeholder="Enter full name"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Staff ID *</label>
+
+                    <input
+                        type="text"
+                        id="staffId"
+                        required
+                        placeholder="STAFF001"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Department *</label>
+
+                    <select id="staffDepartment" required>
+
+                        <option value="">Select Department</option>
+                        <option>Computer Science</option>
+                        <option>Physics</option>
+                        <option>Chemistry</option>
+                        <option>Mathematics</option>
+                        <option>English</option>
+                        <option>Administration</option>
+                        <option>Commerce</option>
+                        <option>Other</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Designation</label>
+
+                    <input
+                        type="text"
+                        id="staffDesignation"
+                        placeholder="Assistant Professor"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Email</label>
+
+                    <input
+                        type="email"
+                        id="staffEmail"
+                        placeholder="staff@college.edu"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Phone</label>
+
+                    <input
+                        type="tel"
+                        id="staffPhone"
+                        placeholder="9876543210"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Qualification</label>
+
+                    <input
+                        type="text"
+                        id="staffQualification"
+                        placeholder="M.Sc., Ph.D."
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Joining Date</label>
+
+                    <input
+                        type="date"
+                        id="staffJoining"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Address</label>
+
+                <textarea
+                    id="staffAddress"
+                    rows="3"
+                    placeholder="Enter address"
+                ></textarea>
+
+            </div>
+
+
+            <div id="staffMessage"></div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeStaffModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Save Staff
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="portal.js"></script>
+
+<script>
+
+let editingIndex = null;
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    protectPage();
+    loadUserHeader();
+    renderStaff();
+
+});
+
+
+function loadUserHeader() {
+
+    const user = getCurrentUser();
+
+    if (!user) return;
+
+    document.getElementById("topName").textContent =
+        user.name;
+
+    document.getElementById("topDepartment").textContent =
+        user.department;
+
+    document.getElementById("topAvatar").textContent =
+        user.name.charAt(0).toUpperCase();
+
+}
+
+
+function renderStaff() {
+
+    const staff = getStaff();
+
+    const search =
+        document.getElementById("staffSearch").value
+        .toLowerCase();
+
+    const department =
+        document.getElementById("departmentFilter").value;
+
+
+    const filtered = staff.filter(member => {
+
+        const matchesSearch =
+            member.name.toLowerCase().includes(search) ||
+            member.staffId.toLowerCase().includes(search) ||
+            (member.email || "").toLowerCase().includes(search) ||
+            member.department.toLowerCase().includes(search);
+
+        const matchesDepartment =
+            !department ||
+            member.department === department;
+
+        return matchesSearch && matchesDepartment;
+
+    });
+
+
+    const table =
+        document.getElementById("staffTable");
+
+
+    if (filtered.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="empty">
+                        No staff members found.
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    table.innerHTML = filtered.map(member => {
+
+        const originalIndex =
+            staff.findIndex(
+                s => s.staffId === member.staffId
+            );
+
+        return `
+
+            <tr>
+
+                <td>
+
+                    <div class="staff-person">
+
+                        <div class="small-avatar">
+                            ${escapeHTML(member.name.charAt(0).toUpperCase())}
+                        </div>
+
+                        <div>
+                            <strong>
+                                ${escapeHTML(member.name)}
+                            </strong>
+
+                            <small>
+                                ${escapeHTML(member.designation || "Staff")}
+                            </small>
+                        </div>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+                    ${escapeHTML(member.staffId)}
+                </td>
+
+
+                <td>
+                    <span class="badge">
+                        ${escapeHTML(member.department)}
+                    </span>
+                </td>
+
+
+                <td>
+                    ${escapeHTML(member.email || "-")}
+                </td>
+
+
+                <td>
+                    ${escapeHTML(member.phone || "-")}
+                </td>
+
+
+                <td>
+
+                    <div class="action-buttons">
+
+                        <button
+                            class="edit-btn"
+                            onclick="editStaff(${originalIndex})"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            class="delete-btn"
+                            onclick="deleteStaff(${originalIndex})"
+                        >
+                            Delete
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }).join("");
+
+}
+
+
+function openStaffModal(index = null) {
+
+    editingIndex = index;
+
+    document.getElementById("staffForm").reset();
+
+    document.getElementById("staffMessage").innerHTML = "";
+
+
+    if (index !== null) {
+
+        const staff = getStaff()[index];
+
+        document.getElementById("modalTitle").textContent =
+            "Edit Staff";
+
+
+        document.getElementById("staffName").value =
+            staff.name || "";
+
+        document.getElementById("staffId").value =
+            staff.staffId || "";
+
+        document.getElementById("staffDepartment").value =
+            staff.department || "";
+
+        document.getElementById("staffDesignation").value =
+            staff.designation || "";
+
+        document.getElementById("staffEmail").value =
+            staff.email || "";
+
+        document.getElementById("staffPhone").value =
+            staff.phone || "";
+
+        document.getElementById("staffQualification").value =
+            staff.qualification || "";
+
+        document.getElementById("staffJoining").value =
+            staff.joiningDate || "";
+
+        document.getElementById("staffAddress").value =
+            staff.address || "";
+
+    } else {
+
+        document.getElementById("modalTitle").textContent =
+            "Add Staff";
+
+    }
+
+
+    document.getElementById("staffModal")
+        .classList.add("show");
+
+}
+
+
+function closeStaffModal() {
+
+    document.getElementById("staffModal")
+        .classList.remove("show");
+
+    editingIndex = null;
+
+}
+
+
+document.getElementById("staffForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+
+    const staff = getStaff();
+
+
+    const data = {
+
+        name: document.getElementById("staffName").value.trim(),
+
+        staffId: document.getElementById("staffId").value.trim(),
+
+        department:
+            document.getElementById("staffDepartment").value,
+
+        designation:
+            document.getElementById("staffDesignation").value.trim(),
+
+        email:
+            document.getElementById("staffEmail").value.trim(),
+
+        phone:
+            document.getElementById("staffPhone").value.trim(),
+
+        qualification:
+            document.getElementById("staffQualification").value.trim(),
+
+        joiningDate:
+            document.getElementById("staffJoining").value,
+
+        address:
+            document.getElementById("staffAddress").value.trim(),
+
+        updatedAt:
+            new Date().toISOString()
+
+    };
+
+
+    const duplicate = staff.some((member, index) => {
+
+        return member.staffId.toLowerCase() ===
+            data.staffId.toLowerCase()
+            &&
+            index !== editingIndex;
+
+    });
+
+
+    if (duplicate) {
+
+        document.getElementById("staffMessage").innerHTML = `
+            <div class="error-message">
+                This Staff ID already exists.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    if (editingIndex === null) {
+
+        data.createdAt = new Date().toISOString();
+
+        staff.push(data);
+
+    } else {
+
+        data.password =
+            staff[editingIndex].password || "123456";
+
+        data.createdAt =
+            staff[editingIndex].createdAt;
+
+        staff[editingIndex] = data;
+
+    }
+
+
+    saveStaff(staff);
+
+    closeStaffModal();
+
+    renderStaff();
+
+    alert(
+        editingIndex === null
+        ? "Staff added successfully!"
+        : "Staff updated successfully!"
+    );
+
+});
+
+
+function editStaff(index) {
+
+    openStaffModal(index);
+
+}
+
+
+function deleteStaff(index) {
+
+    const staff = getStaff();
+
+    const member = staff[index];
+
+
+    const confirmDelete = confirm(
+        `Delete ${member.name} from staff records?`
+    );
+
+
+    if (!confirmDelete) return;
+
+
+    staff.splice(index, 1);
+
+    saveStaff(staff);
+
+
+    /* Remove attendance records of deleted staff */
+
+    const attendance = getAttendance();
+
+    Object.keys(attendance).forEach(key => {
+
+        if (key.startsWith(member.staffId + "_")) {
+
+            delete attendance[key];
+
+        }
+
+    });
+
+    saveAttendance(attendance);
+
+
+    renderStaff();
+
+    alert("Staff deleted successfully.");
+
+}
+
+</script>
+
+</body>
+</html>

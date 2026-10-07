@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Staff Login | EduStaff</title>
+
+    <link rel="stylesheet" href="login.css">
+
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <!-- LEFT SIDE -->
+
+    <div class="login-left">
+
+        <a href="index.html" class="brand">
+
+            <div class="brand-icon">E</div>
+
+            <div>
+                <strong>EduStaff</strong>
+                <small>College Staff Portal</small>
+            </div>
+
+        </a>
+
+
+        <div class="welcome">
+
+            <span class="small-label">WELCOME BACK</span>
+
+            <h1>
+                Manage your
+                <span>college work</span>
+                smarter.
+            </h1>
+
+            <p>
+                Login to access your staff dashboard, notices,
+                attendance and college management tools.
+            </p>
+
+            <div class="login-features">
+
+                <div>
+                    <span>✓</span>
+                    Staff Dashboard
+                </div>
+
+                <div>
+                    <span>✓</span>
+                    Attendance Management
+                </div>
+
+                <div>
+                    <span>✓</span>
+                    College Notices
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+
+    <div class="login-right">
+
+        <div class="login-card">
+
+            <div class="mobile-brand">
+                <div class="brand-icon">E</div>
+                <strong>EduStaff</strong>
+            </div>
+
+            <span class="small-label">STAFF LOGIN</span>
+
+            <h2>Welcome back 👋</h2>
+
+            <p class="login-subtitle">
+                Enter your credentials to continue.
+            </p>
+
+
+            <div id="loginMessage" class="message"></div>
+
+
+            <form id="loginForm">
+
+                <label for="staffId">
+                    Staff ID
+                </label>
+
+                <input
+                    type="text"
+                    id="staffId"
+                    placeholder="Enter your Staff ID"
+                    autocomplete="username"
+                    required
+                >
+
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-box">
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        id="togglePassword"
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+
+                <div class="login-options">
+
+                    <label class="remember">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+
+                    <a href="#" id="forgotPassword">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <button type="submit" class="login-btn">
+                    Login to Dashboard →
+                </button>
+
+            </form>
+
+
+            <div class="register-text">
+
+                Don't have a staff account?
+
+                <a href="register.html">
+                    Create Account
+                </a>
+
+            </div>
+
+
+            <div class="security-note">
+
+                🔒 Your login information is stored locally
+                in this browser for this project.
+
+            </div>
+
+
+            <a href="index.html" class="back-home">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="login.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | EduStaff</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">E</div>
+
+            <div>
+                <h2>EduStaff</h2>
+                <span>College Portal</span>
+            </div>
+        </div>
+
+
+        <nav class="nav">
+
+            <a href="dashboard.html" class="nav-link">
+                📊 Dashboard
+            </a>
+
+            <a href="staff.html" class="nav-link">
+                👨‍🏫 Staff Management
+            </a>
+
+            <a href="attendance.html" class="nav-link">
+                📅 Attendance
+            </a>
+
+            <a href="notices.html" class="nav-link">
+                📢 Notices
+            </a>
+
+            <a href="profile.html" class="nav-link active">
+                👤 My Profile
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button class="logout-btn" onclick="logout()">
+                🚪 Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <button class="menu-btn" onclick="toggleSidebar()">
+                ☰
+            </button>
+
+            <div>
+                <h1>My Profile</h1>
+                <p>Manage your staff information</p>
+            </div>
+
+            <div class="user-box">
+
+                <div class="avatar" id="topAvatar">
+                    A
+                </div>
+
+                <div>
+
+                    <strong id="topName">
+                        Staff
+                    </strong>
+
+                    <small id="topDepartment">
+                        Department
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+            <div class="profile-card">
+
+                <div class="profile-top">
+
+                    <div class="profile-avatar" id="profileAvatar">
+                        A
+                    </div>
+
+                    <div>
+
+                        <h2 id="profileName">
+                            Staff
+                        </h2>
+
+                        <p id="profileDepartment">
+                            Department
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="profileForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label>Full Name</label>
+
+                            <input
+                                type="text"
+                                id="profileFullName"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>Staff ID</label>
+
+                            <input
+                                type="text"
+                                id="profileStaffId"
+                                disabled
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>Email</label>
+
+                            <input
+                                type="email"
+                                id="profileEmail"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>Department</label>
+
+                            <input
+                                type="text"
+                                id="profileDepartmentInput"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>Phone</label>
+
+                            <input
+                                type="tel"
+                                id="profilePhone"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>Designation</label>
+
+                            <input
+                                type="text"
+                                id="profileDesignation"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        Save Profile
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="portal.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    protectPage();
+
+    loadProfile();
+
+});
+
+
+function loadProfile() {
+
+    const user = getCurrentUser();
+
+    if (!user) return;
+
+
+    document.getElementById("topName").textContent =
+        user.name;
+
+    document.getElementById("topDepartment").textContent =
+        user.department;
+
+    document.getElementById("topAvatar").textContent =
+        user.name.charAt(0).toUpperCase();
+
+
+    document.getElementById("profileAvatar").textContent =
+        user.name.charAt(0).toUpperCase();
+
+    document.getElementById("profileName").textContent =
+        user.name;
+
+    document.getElementById("profileDepartment").textContent =
+        user.department;
+
+
+    document.getElementById("profileFullName").value =
+        user.name || "";
+
+    document.getElementById("profileStaffId").value =
+        user.staffId || "";
+
+    document.getElementById("profileEmail").value =
+        user.email || "";
+
+    document.getElementById("profileDepartmentInput").value =
+        user.department || "";
+
+    document.getElementById("profilePhone").value =
+        user.phone || "";
+
+    document.getElementById("profileDesignation").value =
+        user.designation || "";
+
+}
+
+
+document.getElementById("profileForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+
+    const current =
+        getCurrentUser();
+
+
+    const staff =
+        getStaff();
+
+
+    const index =
+        staff.findIndex(
+            member => member.staffId === current.staffId
+        );
+
+
+    if (index === -1) {
+
+        alert("Profile record not found.");
+
+        return;
+
+    }
+
+
+    staff[index].name =
+        document.getElementById("profileFullName").value.trim();
+
+    staff[index].email =
+        document.getElementById("profileEmail").value.trim();
+
+    staff[index].department =
+        document.getElementById("profileDepartmentInput").value.trim();
+
+    staff[index].phone =
+        document.getElementById("profilePhone").value.trim();
+
+    staff[index].designation =
+        document.getElementById("profileDesignation").value.trim();
+
+
+    saveStaff(staff);
+
+
+    const updatedUser = {
+
+        ...current,
+
+        name: staff[index].name,
+
+        email: staff[index].email,
+
+        department: staff[index].department,
+
+        phone: staff[index].phone,
+
+        designation: staff[index].designation
+
+    };
+
+
+    localStorage.setItem(
+        "currentStaff",
+        JSON.stringify(updatedUser)
+    );
+
+
+    loadProfile();
+
+
+    alert("Profile updated successfully!");
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notices | EduStaff</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">E</div>
+            <div>
+                <h2>EduStaff</h2>
+                <span>College Portal</span>
+            </div>
+        </div>
+
+        <nav class="nav">
+
+            <a href="dashboard.html" class="nav-link">
+                📊 Dashboard
+            </a>
+
+            <a href="staff.html" class="nav-link">
+                👨‍🏫 Staff Management
+            </a>
+
+            <a href="attendance.html" class="nav-link">
+                📅 Attendance
+            </a>
+
+            <a href="notices.html" class="nav-link active">
+                📢 Notices
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                👤 My Profile
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <button class="logout-btn" onclick="logout()">
+                🚪 Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+            <div>
+                <h1>Notices</h1>
+                <p>College announcements and notices</p>
+            </div>
+
+            <div class="user-box">
+
+                <div class="avatar" id="topAvatar">A</div>
+
+                <div>
+                    <strong id="topName">Staff</strong>
+                    <small id="topDepartment">Department</small>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+            <div class="page-header">
+
+                <div>
+                    <h2>College Notices</h2>
+                    <p>Create and manage announcements.</p>
+                </div>
+
+                <button
+                    class="primary-btn"
+                    onclick="openNoticeModal()"
+                >
+                    + Add Notice
+                </button>
+
+            </div>
+
+
+            <div id="noticeContainer" class="notice-grid">
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- NOTICE MODAL -->
+
+<div class="modal" id="noticeModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2 id="noticeModalTitle">
+                    Add Notice
+                </h2>
+
+                <p>
+                    Create a college announcement.
+                </p>
+
+            </div>
+
+            <button onclick="closeNoticeModal()">
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="noticeForm">
+
+            <input
+                type="hidden"
+                id="noticeIndex"
+            >
+
+
+            <div class="form-group">
+
+                <label>Notice Title *</label>
+
+                <input
+                    type="text"
+                    id="noticeTitle"
+                    required
+                    placeholder="Enter notice title"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Date *</label>
+
+                <input
+                    type="date"
+                    id="noticeDate"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Description *</label>
+
+                <textarea
+                    id="noticeDescription"
+                    rows="6"
+                    required
+                    placeholder="Enter notice details..."
+                ></textarea>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeNoticeModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Save Notice
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="portal.js"></script>
+
+<script>
+
+let editingNoticeIndex = null;
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    protectPage();
+
+    loadUserHeader();
+
+    renderNotices();
+
+});
+
+
+function loadUserHeader() {
+
+    const user = getCurrentUser();
+
+    if (!user) return;
+
+    document.getElementById("topName").textContent =
+        user.name;
+
+    document.getElementById("topDepartment").textContent =
+        user.department;
+
+    document.getElementById("topAvatar").textContent =
+        user.name.charAt(0).toUpperCase();
+
+}
+
+
+function renderNotices() {
+
+    const notices = getNotices();
+
+    const container =
+        document.getElementById("noticeContainer");
+
+
+    if (notices.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty notice-empty">
+                No notices available.
+                Click "Add Notice" to create one.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = notices.map((notice, index) => `
+
+        <div class="notice-card">
+
+            <div class="notice-card-top">
+
+                <div class="notice-big-icon">
+                    📢
+                </div>
+
+                <div class="notice-date">
+                    ${escapeHTML(notice.date)}
+                </div>
+
+            </div>
+
+
+            <h3>
+                ${escapeHTML(notice.title)}
+            </h3>
+
+
+            <p>
+                ${escapeHTML(notice.description)}
+            </p>
+
+
+            <div class="notice-actions">
+
+                <button
+                    class="edit-btn"
+                    onclick="editNotice(${index})"
+                >
+                    Edit
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteNotice(${index})"
+                >
+                    Delete
+                </button>
+
+            </div>
+
+        </div>
+
+    `).join("");
+
+}
+
+
+function openNoticeModal(index = null) {
+
+    editingNoticeIndex = index;
+
+    document.getElementById("noticeForm").reset();
+
+
+    if (index !== null) {
+
+        const notice =
+            getNotices()[index];
+
+
+        document.getElementById("noticeModalTitle")
+            .textContent = "Edit Notice";
+
+
+        document.getElementById("noticeTitle").value =
+            notice.title;
+
+        document.getElementById("noticeDate").value =
+            notice.date;
+
+        document.getElementById("noticeDescription").value =
+            notice.description;
+
+    } else {
+
+        document.getElementById("noticeModalTitle")
+            .textContent = "Add Notice";
+
+
+        document.getElementById("noticeDate").value =
+            getToday();
+
+    }
+
+
+    document.getElementById("noticeModal")
+        .classList.add("show");
+
+}
+
+
+function closeNoticeModal() {
+
+    document.getElementById("noticeModal")
+        .classList.remove("show");
+
+    editingNoticeIndex = null;
+
+}
+
+
+document.getElementById("noticeForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+
+    const notices = getNotices();
+
+
+    const data = {
+
+        title:
+            document.getElementById("noticeTitle")
+                .value.trim(),
+
+        date:
+            document.getElementById("noticeDate")
+                .value,
+
+        description:
+            document.getElementById("noticeDescription")
+                .value.trim(),
+
+        updatedAt:
+            new Date().toISOString()
+
+    };
+
+
+    if (editingNoticeIndex === null) {
+
+        data.createdAt =
+            new Date().toISOString();
+
+        notices.unshift(data);
+
+    } else {
+
+        data.createdAt =
+            notices[editingNoticeIndex].createdAt;
+
+        notices[editingNoticeIndex] = data;
+
+    }
+
+
+    saveNotices(notices);
+
+    closeNoticeModal();
+
+    renderNotices();
+
+
+    alert(
+        editingNoticeIndex === null
+        ? "Notice added successfully!"
+        : "Notice updated successfully!"
+    );
+
+});
+
+
+function editNotice(index) {
+
+    openNoticeModal(index);
+
+}
+
+
+function deleteNotice(index) {
+
+    const notices = getNotices();
+
+    const notice = notices[index];
+
+
+    if (!confirm(
+        `Delete "${notice.title}"?`
+    )) {
+
+        return;
+
+    }
+
+
+    notices.splice(index, 1);
+
+    saveNotices(notices);
+
+    renderNotices();
+
+    alert("Notice deleted successfully.");
+
+}
+
+</script>
+
+</body>
+</html>

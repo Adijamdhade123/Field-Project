@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | EduStaff</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <a href="attendance.html" class="nav-link">
+        <span>📅</span>
+        Attendance
+    </a>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">E</div>
+            <div>
+                <h2>EduStaff</h2>
+                <span>College Portal</span>
+            </div>
+        </div>
+
+        <nav class="nav">
+
+            <a href="dashboard.html" class="nav-link active">
+                <span>📊</span>
+                Dashboard
+            </a>
+
+            <a href="staff.html" class="nav-link">
+                <span>👨‍🏫</span>
+                Staff Management
+            </a>
+
+            <a href="attendance.html" class="nav-link">
+                <span>📅</span>
+                Attendance
+            </a>
+
+            <a href="notices.html" class="nav-link">
+                <span>📢</span>
+                Notices
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                <span>👤</span>
+                My Profile
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <button class="logout-btn" onclick="logout()">
+                <span>🚪</span>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <header class="topbar">
+
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome back to EduStaff</p>
+            </div>
+
+            <div class="user-box">
+                <div class="avatar" id="topAvatar">A</div>
+
+                <div>
+                    <strong id="topName">Staff</strong>
+                    <small id="topDepartment">Department</small>
+                </div>
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+            <!-- WELCOME -->
+            <div class="welcome-card">
+
+                <div>
+                    <p class="welcome-small">WELCOME BACK 👋</p>
+
+                    <h2>
+                        Hello, <span id="welcomeName">Staff</span>
+                    </h2>
+
+                    <p>
+                        Manage your college staff, attendance and notices
+                        from one place.
+                    </p>
+                </div>
+
+                <div class="welcome-icon">
+                    🎓
+                </div>
+
+            </div>
+
+
+            <!-- STATS -->
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">👨‍🏫</div>
+
+                    <div>
+                        <span>Total Staff</span>
+                        <strong id="totalStaff">0</strong>
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-icon green">📅</div>
+
+                    <div>
+                        <span>Today's Attendance</span>
+                        <strong id="todayAttendance">0%</strong>
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">📢</div>
+
+                    <div>
+                        <span>Total Notices</span>
+                        <strong id="totalNotices">0</strong>
+                    </div>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">🏢</div>
+
+                    <div>
+                        <span>Departments</span>
+                        <strong id="totalDepartments">0</strong>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+            <div class="section-title">
+                <div>
+                    <h2>Quick Actions</h2>
+                    <p>Manage your college portal</p>
+                </div>
+            </div>
+
+
+            <div class="quick-grid">
+
+                <a href="staff.html" class="quick-card">
+                    <div class="quick-icon">👨‍🏫</div>
+                    <h3>Staff Management</h3>
+                    <p>Add, edit, search and manage staff members.</p>
+                    <span>Open →</span>
+                </a>
+
+
+                <a href="attendance.html" class="quick-card">
+                    <div class="quick-icon">📅</div>
+                    <h3>Attendance</h3>
+                    <p>Mark and manage daily staff attendance.</p>
+                    <span>Open →</span>
+                </a>
+
+
+                <a href="notices.html" class="quick-card">
+                    <div class="quick-icon">📢</div>
+                    <h3>Notices</h3>
+                    <p>Create, edit and delete college notices.</p>
+                    <span>Open →</span>
+                </a>
+
+
+                <a href="profile.html" class="quick-card">
+                    <div class="quick-icon">👤</div>
+                    <h3>My Profile</h3>
+                    <p>View and update your staff profile.</p>
+                    <span>Open →</span>
+                </a>
+
+            </div>
+
+
+            <!-- RECENT NOTICES -->
+            <div class="section-title">
+                <div>
+                    <h2>Recent Notices</h2>
+                    <p>Latest college announcements</p>
+                </div>
+
+                <a href="notices.html" class="view-all">
+                    View All
+                </a>
+            </div>
+
+
+            <div class="notice-list" id="recentNotices">
+                <!-- JS will load notices -->
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="portal.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    protectPage();
+    loadDashboard();
+
+});
+
+
+function loadDashboard() {
+
+    const user = getCurrentUser();
+
+    if (!user) return;
+
+    document.getElementById("topName").textContent = user.name;
+    document.getElementById("topDepartment").textContent = user.department;
+
+    document.getElementById("welcomeName").textContent = user.name.split(" ")[0];
+
+    document.getElementById("topAvatar").textContent =
+        user.name.charAt(0).toUpperCase();
+
+
+    const staff = getStaff();
+
+    document.getElementById("totalStaff").textContent = staff.length;
+
+
+    const departments = new Set(
+        staff.map(s => s.department).filter(Boolean)
+    );
+
+    document.getElementById("totalDepartments").textContent =
+        departments.size;
+
+
+    const notices = getNotices();
+
+    document.getElementById("totalNotices").textContent =
+        notices.length;
+
+
+    calculateTodayAttendance();
+
+    loadRecentNotices();
+
+}
+
+
+function calculateTodayAttendance() {
+
+    const staff = getStaff();
+
+    if (staff.length === 0) {
+        document.getElementById("todayAttendance").textContent = "0%";
+        return;
+    }
+
+    const today = getToday();
+
+    const attendance = getAttendance();
+
+    let present = 0;
+    let marked = 0;
+
+    staff.forEach(member => {
+
+        const key = member.staffId + "_" + today;
+
+        if (attendance[key]) {
+
+            marked++;
+
+            if (attendance[key].status === "Present") {
+                present++;
+            }
+
+        }
+
+    });
+
+    if (marked === 0) {
+
+        document.getElementById("todayAttendance").textContent =
+            "Not Marked";
+
+    } else {
+
+        const percentage =
+            Math.round((present / marked) * 100);
+
+        document.getElementById("todayAttendance").textContent =
+            percentage + "%";
+
+    }
+
+}
+
+
+function loadRecentNotices() {
+
+    const container =
+        document.getElementById("recentNotices");
+
+    const notices =
+        getNotices().slice(0, 5);
+
+    if (notices.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No notices available.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML = notices.map(notice => `
+
+        <div class="notice-item">
+
+            <div class="notice-icon">📢</div>
+
+            <div class="notice-content">
+
+                <h3>${escapeHTML(notice.title)}</h3>
+
+                <p>${escapeHTML(notice.description)}</p>
+
+                <small>
+                    ${escapeHTML(notice.date)}
+                </small>
+
+            </div>
+
+        </div>
+
+    `).join("");
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Staff Account | EduStaff</title>
+
+    <link rel="stylesheet" href="register.css">
+
+</head>
+
+<body>
+
+<div class="register-page">
+
+    <div class="register-card">
+
+        <a href="index.html" class="logo">
+            <div class="logo-icon">E</div>
+
+            <div>
+                <strong>EduStaff</strong>
+                <small>College Staff Portal</small>
+            </div>
+        </a>
+
+
+        <div class="heading">
+
+            <span>STAFF REGISTRATION</span>
+
+            <h1>Create Staff Account</h1>
+
+            <p>
+                Enter your details to create a staff portal account.
+            </p>
+
+        </div>
+
+
+        <div id="registerMessage" class="message"></div>
+
+
+        <form id="registerForm">
+
+
+            <div class="form-group">
+
+                <label>Full Name</label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>Staff ID</label>
+
+                    <input
+                        type="text"
+                        id="staffId"
+                        placeholder="Example: STAFF002"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Department</label>
+
+                    <select id="department" required>
+
+                        <option value="">
+                            Select Department
+                        </option>
+
+                        <option>Computer Science</option>
+                        <option>Physics</option>
+                        <option>Chemistry</option>
+                        <option>Mathematics</option>
+                        <option>Commerce</option>
+                        <option>Arts</option>
+                        <option>Administration</option>
+                        <option>Library</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Email Address</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="example@college.edu"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Create password"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Confirm Password</label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Confirm password"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button type="submit" class="register-btn">
+                Create Staff Account
+            </button>
+
+
+        </form>
+
+
+        <div class="login-link">
+
+            Already have an account?
+
+            <a href="login.html">
+                Login here
+            </a>
+
+        </div>
+
+
+        <a href="index.html" class="back">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</div>
+
+
+<script src="register.js"></script>
+
+</body>
+</html>

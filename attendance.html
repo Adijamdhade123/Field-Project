@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance | EduStaff</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">E</div>
+            <div>
+                <h2>EduStaff</h2>
+                <span>College Portal</span>
+            </div>
+        </div>
+
+        <nav class="nav">
+
+            <a href="dashboard.html" class="nav-link">
+                📊 Dashboard
+            </a>
+
+            <a href="staff.html" class="nav-link">
+                👨‍🏫 Staff Management
+            </a>
+
+            <a href="attendance.html" class="nav-link active">
+                📅 Attendance
+            </a>
+
+            <a href="notices.html" class="nav-link">
+                📢 Notices
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                👤 My Profile
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button class="logout-btn" onclick="logout()">
+                🚪 Logout
+            </button>
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+            <div>
+                <h1>Attendance</h1>
+                <p>Manage daily staff attendance</p>
+            </div>
+
+            <div class="user-box">
+                <div class="avatar" id="topAvatar">A</div>
+
+                <div>
+                    <strong id="topName">Staff</strong>
+                    <small id="topDepartment">Department</small>
+                </div>
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+            <div class="page-header">
+
+                <div>
+                    <h2>Staff Attendance</h2>
+                    <p>Select a date and mark attendance.</p>
+                </div>
+
+                <input
+                    type="date"
+                    id="attendanceDate"
+                    class="date-input"
+                >
+
+            </div>
+
+
+            <div class="attendance-summary">
+
+                <div>
+                    <span>Total</span>
+                    <strong id="attendanceTotal">0</strong>
+                </div>
+
+                <div>
+                    <span>Present</span>
+                    <strong id="attendancePresent">0</strong>
+                </div>
+
+                <div>
+                    <span>Absent</span>
+                    <strong id="attendanceAbsent">0</strong>
+                </div>
+
+                <div>
+                    <span>Marked</span>
+                    <strong id="attendanceMarked">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="table-card">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Staff</th>
+                                <th>Staff ID</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="attendanceTable">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="portal.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    protectPage();
+
+    loadUserHeader();
+
+    document.getElementById("attendanceDate").value =
+        getToday();
+
+    renderAttendance();
+
+
+    document.getElementById("attendanceDate")
+        .addEventListener("change", renderAttendance);
+
+});
+
+
+function loadUserHeader() {
+
+    const user = getCurrentUser();
+
+    if (!user) return;
+
+    document.getElementById("topName").textContent =
+        user.name;
+
+    document.getElementById("topDepartment").textContent =
+        user.department;
+
+    document.getElementById("topAvatar").textContent =
+        user.name.charAt(0).toUpperCase();
+
+}
+
+
+function renderAttendance() {
+
+    const date =
+        document.getElementById("attendanceDate").value;
+
+    const staff = getStaff();
+
+    const attendance = getAttendance();
+
+    const table =
+        document.getElementById("attendanceTable");
+
+
+    let present = 0;
+    let absent = 0;
+    let marked = 0;
+
+
+    if (staff.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="5">
+                    <div class="empty">
+                        No staff members available.
+                        Add staff first.
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        updateSummary(0, 0, 0, 0);
+
+        return;
+
+    }
+
+
+    table.innerHTML = staff.map(member => {
+
+        const key =
+            member.staffId + "_" + date;
+
+        const record =
+            attendance[key];
+
+
+        if (record) {
+
+            marked++;
+
+            if (record.status === "Present") {
+                present++;
+            } else {
+                absent++;
+            }
+
+        }
+
+
+        const status =
+            record ? record.status : "Not Marked";
+
+
+        return `
+
+            <tr>
+
+                <td>
+
+                    <div class="staff-person">
+
+                        <div class="small-avatar">
+                            ${escapeHTML(member.name.charAt(0))}
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                ${escapeHTML(member.name)}
+                            </strong>
+
+                            <small>
+                                ${escapeHTML(member.designation || "Staff")}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+                    ${escapeHTML(member.staffId)}
+                </td>
+
+
+                <td>
+                    ${escapeHTML(member.department)}
+                </td>
+
+
+                <td>
+
+                    <span class="
+                        attendance-status
+                        ${status.toLowerCase().replace(" ", "-")}
+                    ">
+                        ${status}
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <div class="attendance-actions">
+
+                        <button
+                            class="present-btn"
+                            onclick="markAttendance('${escapeHTML(member.staffId)}','Present')"
+                        >
+                            Present
+                        </button>
+
+                        <button
+                            class="absent-btn"
+                            onclick="markAttendance('${escapeHTML(member.staffId)}','Absent')"
+                        >
+                            Absent
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }).join("");
+
+
+    updateSummary(
+        staff.length,
+        present,
+        absent,
+        marked
+    );
+
+}
+
+
+function updateSummary(total, present, absent, marked) {
+
+    document.getElementById("attendanceTotal")
+        .textContent = total;
+
+    document.getElementById("attendancePresent")
+        .textContent = present;
+
+    document.getElementById("attendanceAbsent")
+        .textContent = absent;
+
+    document.getElementById("attendanceMarked")
+        .textContent = marked;
+
+}
+
+
+function markAttendance(staffId, status) {
+
+    const date =
+        document.getElementById("attendanceDate").value;
+
+
+    const attendance =
+        getAttendance();
+
+
+    const key =
+        staffId + "_" + date;
+
+
+    attendance[key] = {
+
+        staffId: staffId,
+
+        date: date,
+
+        status: status,
+
+        markedAt:
+            new Date().toISOString()
+
+    };
+
+
+    saveAttendance(attendance);
+
+
+    renderAttendance();
+
+}
+
+</script>
+
+</body>
+</html>
